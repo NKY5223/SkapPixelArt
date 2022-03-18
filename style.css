@@ -1,0 +1,184 @@
+:root {
+    --theme-dark-blue: #1560c0;
+    --theme-blue: #2080ff;
+    --theme-light-blue: #40c0ff;
+    --theme-disabled: #c0c0c0;
+    --theme-disabled-overlay: #ffffff20;
+    --theme-unselected: #808080;
+    --theme-unselected-dark: #606060;
+    --theme-hover: #707070;
+    --theme-border: #606060;
+}
+html, body {
+    padding: 0;
+    margin: 0;
+    background: #404040;
+    overflow-x: hidden;
+}
+* {
+    color: #ffffff;
+    font-family: Consolas, monospace;
+}
+.section {
+    position: relative;
+    background: var(--background);
+    --background: #404040;
+    --triangleheight-top: 50px;
+    --triangleheight-bottom: 50px;
+}
+.section.topleft::before {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: 100%;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: calc(var(--triangleheight-top) / 2) 50vw calc(var(--triangleheight-top) / 2) 50vw;
+    border-color: transparent transparent var(--background) var(--background);
+}
+.section.bottomright {
+    margin-bottom: var(--triangleheight-bottom);
+}
+.section.bottomright::after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 100%;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: calc(var(--triangleheight-bottom) / 2) 50vw calc(var(--triangleheight-bottom) / 2) 50vw;
+    border-color: var(--background) var(--background) transparent transparent;
+}
+.section.topright::before {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: 100%;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: calc(var(--triangleheight-top) / 2) 50vw calc(var(--triangleheight-top) / 2) 50vw;
+    border-color: transparent var(--background) var(--background) transparent;
+}
+.section.bottomleft {
+    margin-bottom: var(--triangleheight-bottom);
+}
+.section.bottomleft::after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 100%;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: calc(var(--triangleheight-bottom) / 2) 50vw calc(var(--triangleheight-bottom) / 2) 50vw;
+    border-color: var(--background) transparent transparent var(--background);
+}
+h2 {
+    padding-left: 20px;
+}
+input {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--theme-blue);
+    transition: 0.1s;
+}
+input[type=number]:hover, input[type=text]:hover, input[type=number]:focus, input[type=text]:focus {
+    border-bottom-color: var(--theme-light-blue);
+    outline: none;
+}
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type=number] {
+    -moz-appearance:textfield;
+}
+input[type=number]:disabled, input[type=text]:disabled {
+    border-bottom: 2px solid var(--theme-disabled);
+    background: var(--theme-disabled-overlay);
+    text-decoration: line-through;
+}
+.customCheckboxDisplay {
+    display: inline-block;
+    vertical-align: middle;
+    width: 17px;
+    height: 17px;
+    background: var(--theme-unselected);
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    transition: 0.2s;
+}
+.customCheckboxDisplay:hover {
+    background: var(--theme-unselected-dark)
+}
+input[type=checkbox].customCheckbox:disabled ~ .customCheckboxDisplay {
+    background: var(--theme-disabled) !important;
+    cursor: default;
+}
+input[type=checkbox].customCheckbox:checked ~ .customCheckboxDisplay {
+    background: var(--theme-blue);
+}
+input[type=checkbox].customCheckbox:checked ~ .customCheckboxDisplay:hover {
+    background: var(--theme-dark-blue);
+}
+.customCheckboxDisplay::after {
+    content: "";
+    display: block;
+    width: 60%;
+    height: 30%;
+    border: 0 solid white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -75%) rotate(135deg) scale(0);
+    transition: 0.2s;
+}
+input[type=checkbox].customCheckbox:checked ~ .customCheckboxDisplay::after {
+    border-width: 0 0 2px 2px;
+    transform: translate(-50%, -75%) rotate(-45deg) scale(1);
+}
+input[type=checkbox].customCheckbox {
+    display: none;
+}
+a {
+    color: var(--theme-blue);
+}
+a:active {
+    color: var(--theme-light-blue);
+}
+
+
+#uploadImage {
+    height: 220px;
+    --background: #202020;
+}
+#imageInput {
+    display: none;
+}
+label[for=imageInput] {
+    position: absolute;
+    top: 50px;
+    left: 10%;
+    transform: translateY(-50%);
+    color: var(--theme-blue);
+    cursor: pointer;
+}
+label[for=imageInput]:hover {
+    color: var(--theme-light-blue);
+}
+#imageCanvas {
+    position: absolute;
+    bottom: 10px;
+    right: 50px;
+    margin-top: 10px;
+    background: #000000;
+}
+
+.settingsContent {
+    padding: 20px 0 20px 10%;
+}

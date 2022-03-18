@@ -7,7 +7,38 @@
         <title>Skap Pixel Art Generator</title>
     </head>
     <body>
-        <input type="file" id="image" accept="image/*">
+        <div id="uploadImage" class="section bottomright">
+            <input type="file" id="imageInput" accept="image/*">
+            <label for="imageInput">Upload an image</label>
+            <canvas id="imageCanvas" width="100" height="100">Canvas isn't supported, you don't play skap :/</canvas>
+        </div>
+        <div id="pixelateSettings" class="section topleft bottomleft" style="--background: #404040; --triangleheight-bottom: 40px;">
+            <div class="settingsContent">
+                <label for="pixelSizeInput">Pixel Size: <input type="number" id="pixelSizeInput" value="5" disabled></label><br>
+                <small style="font-size: x-small; padding-left: 4em;">
+                    The Pixel Size determines the size of the squares which your image is divided into, for instance a 1000x1000 image with Pixel Size 5 would result in 200 * 200 = 40000 blocks</small>
+                <br>
+                <label for="colorThresholdInput">Colour Threshold: <input type="number" id="colorThresholdInput" value="2" disabled></label><br>
+                <small style="font-size: x-small; padding-left: 4em;">
+                    The Colour Threshold determines how similar colors have to be to be in the same block.
+                    0 = no difference, &lt;1 = imperceptible, 2-10 = quite similar</small>
+                <!-- <label for="mixAlphaInput">Mix Alpha: <input type="checkbox" id="mixAlphaInput" class="customCheckbox" disabled><span class="customCheckboxDisplay"></span></label><br>
+                <small style="font-size: x-small; padding-left: 4em;">
+                    The Mix Alpha setting determines whether non-transparent pixels are mixed</small> -->
+            </div>
+        </div>
+        <div id="outputSettings" class="section topright bottomleft" style="--background: #202020; --triangleheight-top: 40px; --triangleheight-bottom: 30px;">
+            <div class="settingsContent">
+                <label for="blockSizeInput">Block Size: <input type="number" id="blockSizeInput" value="5" disabled></label><br>
+                <small style="font-size: x-small; padding-left: 4em;">
+                    The Block Size determines the size of the blocks in the <a href="https://skap.io">Skap</a> Map, in Skap units</small>
+                <br>
+                <label for="mapInput">Map: <input type="file" id="mapInput" accept="application/json" disabled></label>
+            </div>
+        </div>
+        <div id="footer" class="section topright" style="--triangleheight-top: 30px; --background: #404040; padding: 50px 0 50px 5%;">
+            Skap Pixel Art Generator was made by NKY, for Skap mapmakers.
+        </div>
         <script src="index.js"></script>
     </body>
 </html>
