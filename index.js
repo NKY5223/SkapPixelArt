@@ -1,19 +1,3 @@
-/** @type {HTMLInputElement} */
-const imageInput = document.getElementById("imageInput");
-/** @type {HTMLDivElement} */
-const uploadImageDiv = document.getElementById("uploadImage");
-let currentImage = null;
-let imageLoaded = false;
-
-/** @type {HTMLInputElement} */
-const pixelSizeInput = document.getElementById("pixelSizeInput");
-/** @type {HTMLInputElement} */
-const blockSizeInput = document.getElementById("blockSizeInput");
-/** @type {HTMLInputElement} */
-const colorThresholdInput = document.getElementById("colorThresholdInput");
-/** @type {HTMLInputElement} */
-const fileInput = document.getElementById("fileInput");
-
 /**
  * @type {HTMLCanvasElement}
  */
@@ -33,7 +17,19 @@ imageEl.addEventListener("load", e => {
     }
 });
 
+/** @type {HTMLInputElement} */
+const imageInput = document.getElementById("imageInput");
+/** @type {HTMLDivElement} */
+const uploadImageDiv = document.getElementById("uploadImage");
+let currentImage = null;
+let imageLoaded = false;
 
+/** @type {HTMLInputElement} */
+const pixelSizeInput = document.getElementById("pixelSizeInput");
+/** @type {HTMLInputElement} */
+const blockSizeInput = document.getElementById("blockSizeInput");
+/** @type {HTMLInputElement} */
+const colorThresholdInput = document.getElementById("colorThresholdInput");
 imageInput.addEventListener("input", e => {
     if (currentImage) URL.revokeObjectURL(currentImage);
     imageLoaded = false;
@@ -53,27 +49,57 @@ imageInput.addEventListener("input", e => {
             imageLoaded = true;
             updatePixelatedImage();
         } catch (err) {
-            alert(err);
             console.error(err);
         }
     });
     imageEl.src = imageURL;
 });
+/** @type {HTMLInputElement} */
+const mapInput = document.getElementById("mapInput");
+const mapInputLabel = document.getElementById("mapInputLabel");
+/** @type {HTMLSelectElement} */
+const areaInput = document.getElementById("areaInput");
+
+/** @type {{ maps: { type: "block", position: [number, number], size: [number, number], layer: 0 | 1, collide: boolean, color: [number, number, number], opacity: number }[] }} */
+let currentMap = null;
+mapInput.addEventListener("input", e => {
+    mapInputLabel.removeChild(mapInputLabel.firstChild);
+    mapInputLabel.append(mapInput.files[0].name);
+    mapInput.files[0].text().then(json => {
+        try {
+            currentMap = JSON.parse(json);
+            while (areaInput.firstChild) areaInput.firstChild.remove();
+            if (!(currentMap.maps && (currentMap.maps instanceof Array))) throw new Error("areas not found")
+            areaInput.append(currentMap.maps.map());
+        } catch (err) {
+            console.error(err)
+        }
+    });
+});
+
+/**
+ * @type {HTMLCanvasElement}
+ */
+const outputCanvas = document.getElementById("outputCanvas");
+const outputCtx = outputCanvas.getContext("2d");
 /** @type {[number, number, number, number][]} */
-let pixelatedImage = [];
+let pixelatedImage = null;
+let pixelatedWidth = null;
+let pixelatedHeight = null;
 function updatePixelatedImage() {
     const data = imageCtx.getImageData(0, 0, imageEl.width, imageEl.height).data;
-    pixelatedImage.length = 0;
+    pixelatedImage = [];
     pixelSizeInput.disabled = true;
     blockSizeInput.disabled = true;
-    colorThresholdInput.disabled = true;
-    fileInput.disabled = true;
-    
-    
+    // colorThresholdInput.disabled = true;
+    mapInput.disabled = true;
+
+
     const pixelSize = Number(pixelSizeInput.value);
-    
-    for (let y = 0; y < imageEl.height; y += pixelSize) {
-        for (let x = 0; x < imageEl.width; x += pixelSize) {
+    const blockSize = Number(blockSizeInput.value);
+
+    for (let y = 0; y < imageEl.height; y += pixelSize, pixelatedHeight++) {
+        for (let x = 0; x < imageEl.width; x += pixelSize, pixelatedWidth++) {
             let colorR = 0;
             let colorG = 0;
             let colorB = 0;
@@ -88,18 +114,33 @@ function updatePixelatedImage() {
             colorR /= n;
             colorG /= n;
             colorB /= n;
-            
+
+            outputCtx.fillStyle = `rgb(${colorR}, ${colorG}, ${colorB})`;
+            outputCtx.fillRect(x * blockSize / pixelSize, y * blockSize / pixelSize, blockSize, blockSize);
+
             pixelatedImage.push([colorR, colorG, colorB, 255]);
         }
     }
-    
+    pixelatedWidth = Math.ceil(imageEl.width / pixelSize);
+    pixelatedHeight = Math.ceil(imageEl.height / pixelSize);
+
+    outputCanvas.width = pixelatedWidth * blockSize;
+    outputCanvas.height = pixelatedHeight * blockSize;
+
+    for (let y = 0; y < pixelatedHeight; y++) {
+        for (let x = 0; x < pixelatedWidth; x++) {
+            outputCtx.fillStyle = `rgba(${pixelatedImage[y * pixelatedWidth + x].join()})`;
+            outputCtx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
+        }
+    }
+
     pixelSizeInput.disabled = false;
     blockSizeInput.disabled = false;
-    colorThresholdInput.disabled = false;
-    fileInput.disabled = true;
+    // colorThresholdInput.disabled = false;
+    mapInput.disabled = false;
 }
-// pixelSizeInput.addEventListener("change", updatePixelatedImage);
-// blockSizeInput.addEventListener("change", updatePixelatedImage);
+pixelSizeInput.addEventListener("change", updatePixelatedImage);
+blockSizeInput.addEventListener("change", updatePixelatedImage);
 // colorThresholdInput.addEventListener("change", updatePixelatedImage);
 
 
